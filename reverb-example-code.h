@@ -14,10 +14,10 @@ double randomInRange(double low, double high) {
 using Delay = signalsmith::delay::Delay<double, signalsmith::delay::InterpolatorNearest>;
 
 struct SingleChannelFeedback {
-	double delayMs = 80;
-	double decayGain = 0.85;
+	double delayMs = 250;
+	double decayGain = 0.6;
 
-	int delaySamples;
+	int delaySamples; // number of samples delayed by
 	Delay delay;
 	
 	void configure(double sampleRate) {
@@ -41,10 +41,10 @@ template<int channels=8>
 struct MultiChannelFeedback {
 	using Array = std::array<double, channels>;
 
-	double delayMs = 150;
-	double decayGain = 0.85;
+	double delayMs = 250;
+	double decayGain = 0.8;
 
-	std::array<int, channels> delaySamples;
+	std::array<int, channels> delaySamples; // number of samples in each channel delayed by
 	std::array<Delay, channels> delays;
 	
 	void configure(double sampleRate) {
@@ -53,7 +53,7 @@ struct MultiChannelFeedback {
 			// Distribute delay times exponentially between delayMs and 2*delayMs
 			double r = c*1.0/channels;
 			delaySamples[c] = std::pow(2, r)*delaySamplesBase;
-			
+
 			delays[c].resize(delaySamples[c] + 1);
 			delays[c].reset();
 		}
@@ -77,7 +77,7 @@ struct MultiChannelFeedback {
 template<int channels=8>
 struct MultiChannelMixedFeedback {
 	using Array = std::array<double, channels>;
-	double delayMs = 150;
+	double delayMs = 250;
 	double decayGain = 0.85;
 
 	std::array<int, channels> delaySamples;

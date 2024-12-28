@@ -32,6 +32,15 @@ class ExampleRunner {
 		}
 	}
 
+	/*
+	 creates a template for multiProcessor
+	 template takes in arguments for number of channels, whether it should avg output, and what kind of processor
+	 multiProcessor takes in fixed type of string, but also an arbitary processor
+
+	 usage:
+													 vvv-- this can be intferred by the compiler
+	 multiProcessor<channels, whether to avg output, and processor type/class/struct> ( other args... )
+	*/
 	template<int channels, bool averageOutputs=true, class Processor>
 	void multiProcessor(std::string name, Processor &&processor) {
 		static_assert(channels%2 == 0, "there must be an even number of channels");
@@ -48,10 +57,12 @@ class ExampleRunner {
 		for (int i = 0; i < durationSamples; ++i) {
 
 			// Duplicate input channels as many times as needed
+			// This array is of type double and length channels
 			std::array<double, channels> array;
 			for (int c = 0; c < channels; ++c) {
 				int inputChannel = c%inputWav.channels;
-				array[c] = inputWav.samples[i*inputWav.channels + inputChannel];
+				int index = i*inputWav.channels + inputChannel; // if 4 logical and 2 physical input channels, then inputchannel will be 0 1 0 1
+				array[c] = inputWav.samples[index];
 			}
 			
 			array = processor.process(array);
@@ -92,22 +103,25 @@ public:
 	}
 
 	void runExamples() {
-		extendDuration(3);
+		extendDuration(10);
 		monoProcessor("single-channel-feedback", SingleChannelFeedback());
+		multiProcessor<2>("multi-channel-feedback-2", MultiChannelFeedback<2>());
 		multiProcessor<4>("multi-channel-feedback-4", MultiChannelFeedback<4>());
 		multiProcessor<8>("multi-channel-feedback-8", MultiChannelFeedback<8>());
+		multiProcessor<16>("multi-channel-feedback-16", MultiChannelFeedback<16>());
 		multiProcessor<4>("multi-channel-feedback-householder-4", MultiChannelMixedFeedback<4>());
 		multiProcessor<8>("multi-channel-feedback-householder-8", MultiChannelMixedFeedback<8>());
-		multiProcessor<4, false>("diffuser-equal-4-3", DiffuserHalfLengths<4, 3>(200));
-		multiProcessor<8, false>("diffuser-equal-8-4", DiffuserHalfLengths<8, 4>(200));
-		multiProcessor<8, false>("diffuser-equal-8-6-long", DiffuserEqualLengths<8, 6>(3000));
-		multiProcessor<8, false>("diffuser-halves-8-6-long", DiffuserHalfLengths<8, 6>(3000));
-		extendDuration(1);
-		multiProcessor<8, true>("reverb-basic-8-short", BasicReverb<8, 4>(50, 2.5));
-		extendDuration(2);
-		multiProcessor<8, true>("reverb-basic-8-mix", BasicReverb<8, 4>(100, 3, 1, 0.25));
-		extendDuration(2);
-		multiProcessor<8, true>("reverb-basic-8-long", BasicReverb<8, 4>(100, 10));
+		multiProcessor<16>("multi-channel-feedback-householder-16", MultiChannelMixedFeedback<16>());
+		// multiProcessor<4, false>("diffuser-equal-4-3", DiffuserHalfLengths<4, 3>(200));
+		// multiProcessor<8, false>("diffuser-equal-8-4", DiffuserHalfLengths<8, 4>(200));
+		// multiProcessor<8, false>("diffuser-equal-8-6-long", DiffuserEqualLengths<8, 6>(3000));
+		// multiProcessor<8, false>("diffuser-halves-8-6-long", DiffuserHalfLengths<8, 6>(3000));
+		// extendDuration(1);
+		// multiProcessor<8, true>("reverb-basic-8-short", BasicReverb<8, 4>(50, 2.5));
+		// extendDuration(2);
+		// multiProcessor<8, true>("reverb-basic-8-mix", BasicReverb<8, 4>(100, 3, 1, 0.25));
+		// extendDuration(2);
+		// multiProcessor<8, true>("reverb-basic-8-long", BasicReverb<8, 4>(100, 10));
 	}
 };
 
