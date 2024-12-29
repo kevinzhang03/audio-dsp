@@ -1,22 +1,20 @@
 # Define the compiler and flags
 CXX = clang++
-CXXFLAGS = -std=c++11
+CXXFLAGS = -std=c++11 -Wall
 
 # Define the target executable
-TARGET = main
+TARGET = main.out
 
 # Define the source files
 SRCS = main.cpp
-
-# Define the output files pattern
-OUTPUT_PATTERN = output-*.wav
 
 # Default target
 all: clean $(TARGET)
 
 # Clean up old output files
 clean:
-	rm -f $(OUTPUT_PATTERN) $(TARGET)
+	rm -f output-*.wav $(TARGET)
+	rm -rf ./output-wav
 
 # Compile the source files
 $(TARGET): $(SRCS)
@@ -25,7 +23,7 @@ $(TARGET): $(SRCS)
 
 # Run the program
 run: $(TARGET)
-	./$(TARGET) $(WAV_FILE) output-
+	./$(TARGET) $(WAV_FILE) ${OUTPUT_DIR}
 	@echo "Program executed successfully"
 
 # Phony targets
