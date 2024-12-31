@@ -1,9 +1,9 @@
 # basic reverb using a feedback delay network
 
-This code is largely (like 99%) written by Geraint Luff from Signalsmithm and is from [_Let's Write A Reverb_](https://www.youtube.com/watch?v=6ZK2Goiyotk), presented at ADC 2021.
+This code is largely (like 99%) written by Geraint Luff from Signalsmithm and is from [_Let's Write A Reverb_](https://youtu.be/6ZK2Goiyotk) presented at [ADC 2021.](https://www.audio.dev)
 
-https://github.com/Signalsmith-Audio/reverb-example-code
-https://github.com/signalsmith-audio/dsp
+* https://github.com/Signalsmith-Audio/reverb-example-code
+* https://github.com/signalsmith-audio/dsp
 
 I'm mainly writing this readme (with ChatGPT) so I can look back on it if I ever forget how it works. I made some modifications to more neatly organize and name the output audio files in the project directory.
 
@@ -30,18 +30,28 @@ Each effect is applied independently, and the output files are saved in a struct
 
 ---
 
-## How to Use
+## how to run the program
 
-### **Building the Program**
-
-1. Make sure you have a C++ compiler installed (e.g., `clang++`).
+1. Make sure you have a C++ compiler installed like `clang++`.
 2. Use the provided `Makefile` to compile the code:
 
    ```bash
    make
    ```
 
-3. If you need to clean up compiled files and outputs:
+3. Run the program with your input wav file to process. It will create files named `output-<input_filename>-<processing_method>.wav`.
+
+   ```bash
+   make run WAV_FILE=<wav_file.wav>
+   ```
+   
+   You can also specify an output directory. It defaults to `./output-wav`.
+   
+   ```bash
+   make run WAV_FILE=<wav_file.wav> OUTPUT_DIR=<your/own/path>
+   ```
+
+4. Clean up program files and output. It'll just run 	`rm -f output-*.wav main.out` and `rm -rf ./output-wav`.
 
    ```bash
    make clean
